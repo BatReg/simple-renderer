@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.13.0)
+
+set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+project(SimpleRenderer VERSION 0.0.1)
+
+file(GLOB SRCS
+    "${PROJECT_SOURCE_DIR}/src/win32_main.cpp"
+    )
+
+add_executable(SimpleRenderer WIN32 ${SRCS})
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SimpleRenderer)
