@@ -8,9 +8,29 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 project(SimpleRenderer VERSION 0.0.1)
 
-file(GLOB SRCS
-    "${PROJECT_SOURCE_DIR}/src/win32_main.cpp"
-    )
+set(PLATFORM_HEADERS 
+    include/platform/window.h
+)
 
-add_executable(SimpleRenderer WIN32 ${SRCS})
+if(WIN32)
+    set(PLATFORM_SOURCE_FILES 
+        src/platform/win32/win32_window.cpp
+    )
+endif()
+
+source_group("src\\platform\\include" FILES ${PLATFORM_HEADERS})
+source_group("src\\platform\\src" FILES ${PLATFORM_SOURCE_FILES})
+
+if(WIN32)
+    set(MAIN_FILE
+        src/win32_main.cpp
+    )
+endif()
+
+source_group("src" FILES ${MAIN_FILE})
+
+add_executable(SimpleRenderer WIN32 ${MAIN_FILE}
+    ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES})
+target_include_directories(SimpleRenderer PRIVATE include)
+
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SimpleRenderer)
