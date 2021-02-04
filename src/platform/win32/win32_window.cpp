@@ -2,24 +2,24 @@
 
 #include <string>
 
-struct Platform::Window
+struct Platform::NativeWindow
 {
     std::string title;
 };
 
-Platform::Window* Platform::InitWindow(const char* title)
+void Platform::Window::Init(const std::string& title)
 {
-    Window* wnd = new Window();
-    wnd->title = title;
-    return wnd;
+    m_NativeWindow = new NativeWindow();
+    m_NativeWindow->title = title;
 }
 
-const char* Platform::GetWindowTitle(Window* window)
+std::string Platform::Window::GetTitle() const
 {
-    return window->title.c_str();
+    return m_NativeWindow->title;
 }
 
-void Platform::DestroyWindow(Window* window)
+void Platform::Window::Destroy()
 {
-    delete window;
+    delete m_NativeWindow;
+    m_NativeWindow = nullptr;
 }

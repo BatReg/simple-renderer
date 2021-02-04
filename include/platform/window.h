@@ -1,10 +1,23 @@
 #pragma once
 
+#include <string>
+
 namespace Platform
 {
-    struct Window;
+    struct NativeWindow;
 
-    Window* InitWindow(const char* title);
-    const char* GetWindowTitle(Window* window);
-    void DestroyWindow(Window* window);
+    class Window
+    {
+    public:
+        Window() = default;
+        Window(const Window&) = delete;
+        Window& operator=(const Window&) = delete;
+
+        void        Init(const std::string& title);
+        std::string GetTitle() const;
+        void        Destroy();
+
+    private:
+        NativeWindow* m_NativeWindow = nullptr;
+    };
 };

@@ -4,9 +4,10 @@
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
 {
-    Platform::Window* wnd = Platform::InitWindow("Super awesome title!");
+    Platform::Window wnd{};
+    wnd.Init("Super Awesome Title");
 
-    MessageBoxA(nullptr, "Hello World!", Platform::GetWindowTitle(wnd), MB_OK | MB_ICONINFORMATION);
+    MessageBoxA(nullptr, "Hello World!", wnd.GetTitle().c_str(), MB_OK | MB_ICONINFORMATION);
 
-    Platform::DestroyWindow(wnd);
+    wnd.Destroy();
 }
