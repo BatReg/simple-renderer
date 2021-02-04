@@ -16,6 +16,7 @@ namespace Platform
         void        Init(const std::string& title);
         std::string GetTitle() const;
         void        Destroy();
+        bool        PollEvents() const;
 
     private:
         NativeWindow* m_NativeWindow = nullptr;

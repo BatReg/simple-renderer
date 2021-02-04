@@ -10,6 +10,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 project(SimpleRenderer VERSION 0.0.1)
 
+message("----GENERATING SDL----")
+
+set(SDL_STATIC ON CACHE BOOL "" FORCE)
+set(SDL_SHARED OFF CACHE BOOL "" FORCE)
+add_subdirectory(external/sdl)
+
+message("----GENERATING PROJECT----")
+
 set(PLATFORM_HEADERS 
     include/platform/window.h
 )
@@ -34,5 +42,7 @@ source_group("src" FILES ${MAIN_FILE})
 add_executable(SimpleRenderer WIN32 ${MAIN_FILE}
     ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES})
 target_include_directories(SimpleRenderer PRIVATE include)
+
+target_link_libraries(SimpleRenderer SDL2main SDL2-static)
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SimpleRenderer)

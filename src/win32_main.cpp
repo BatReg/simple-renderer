@@ -12,7 +12,10 @@ int CALLBACK WinMain(
     Platform::Window wnd{};
     wnd.Init("Super Awesome Title");
 
-    MessageBoxA(nullptr, "Hello World!", wnd.GetTitle().c_str(), MB_OK | MB_ICONINFORMATION);
+    while(wnd.PollEvents())
+    {
+        
+    }
 
     wnd.Destroy();
 }
