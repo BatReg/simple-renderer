@@ -2,19 +2,24 @@
 
 #include <string>
 
-struct Window
+struct Platform::Window
 {
     std::string title;
 };
 
-Window* InitWindow(const char* title)
+Platform::Window* Platform::InitWindow(const char* title)
 {
     Window* wnd = new Window();
     wnd->title = title;
     return wnd;
 }
 
-const char* GetWindowTitle(Window* window)
+const char* Platform::GetWindowTitle(Window* window)
 {
     return window->title.c_str();
+}
+
+void Platform::DestroyWindow(Window* window)
+{
+    delete window;
 }
