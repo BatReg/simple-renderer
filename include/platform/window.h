@@ -4,6 +4,28 @@
 
 namespace Platform
 {
+    struct Rect
+    {
+        int x{};
+        int y{};
+        int width{};
+        int height{};
+    };
+
+    enum class RendererAPI
+    {
+        None,
+        OpenGL,
+        Vulkan
+    };
+
+    struct CreateWindowInfo
+    {
+        std::string title{};
+        Rect        rect{};
+        RendererAPI rendererAPI{};
+    };
+
     struct NativeWindow;
 
     class Window
@@ -13,7 +35,7 @@ namespace Platform
         Window(const Window&) = delete;
         Window& operator=(const Window&) = delete;
 
-        void        Init(const std::string& title);
+        void        Init(const CreateWindowInfo& info);
         std::string GetTitle() const;
         void        Destroy();
         bool        PollEvents() const;

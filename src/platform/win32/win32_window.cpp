@@ -10,15 +10,20 @@ struct Platform::NativeWindow
     SDL_Window* pSDLWindow{ nullptr };
 };
 
-void Platform::Window::Init(const std::string& title)
+void Platform::Window::Init(const CreateWindowInfo& info)
 {
     m_NativeWindow = new NativeWindow();
-    m_NativeWindow->title = title;
+    m_NativeWindow->title = info.title;
 
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_WindowFlags windowFlags = static_cast<SDL_WindowFlags>(SDL_WINDOW_OPENGL);
+    const SDL_WindowFlags windowFlags = static_cast<SDL_WindowFlags>(
+        (info.rendererAPI == RendererAPI::OpenGL) * SDL_WINDOW_OPENGL |
+        (info.rendererAPI == RendererAPI::Vulkan) * SDL_WINDOW_VULKAN);
 
-    m_NativeWindow->pSDLWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, windowFlags);
+    const int x = (info.rect.x == 0) * SDL_WINDOWPOS_UNDEFINED + info.rect.x;
+    const int y = (info.rect.y == 0) * SDL_WINDOWPOS_UNDEFINED + info.rect.y;
+
+    m_NativeWindow->pSDLWindow = SDL_CreateWindow(info.title.c_str(), x, y, info.rect.width, info.rect.height, windowFlags);
 }
 
 std::string Platform::Window::GetTitle() const
