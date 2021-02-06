@@ -26,8 +26,6 @@ namespace Platform
         RendererAPI rendererAPI{};
     };
 
-    struct NativeWindow;
-
     class Window
     {
     public:
@@ -41,6 +39,8 @@ namespace Platform
         bool        PollEvents() const;
 
     private:
-        NativeWindow* m_NativeWindow = nullptr;
+        struct NativeWindow;
+
+        NativeWindow* m_NativeWindow{ nullptr };
     };
 };
