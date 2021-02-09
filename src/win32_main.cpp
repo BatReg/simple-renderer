@@ -21,6 +21,4 @@ int main()
     {
         
     }
-
-    wnd.Destroy();
 }

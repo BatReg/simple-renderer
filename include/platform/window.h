@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 namespace Platform
@@ -29,18 +30,19 @@ namespace Platform
     class Window
     {
     public:
-        Window() = default;
+        Window();
         Window(const Window&) = delete;
         Window& operator=(const Window&) = delete;
 
+        ~Window();
+
         void        Init(const CreateWindowInfo& info);
         std::string GetTitle() const;
-        void        Destroy();
         bool        PollEvents() const;
 
     private:
         struct NativeWindow;
 
-        NativeWindow* m_NativeWindow{ nullptr };
+        std::unique_ptr<NativeWindow> m_NativeWindow;
     };
 };

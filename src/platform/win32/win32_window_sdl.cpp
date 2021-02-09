@@ -3,6 +3,7 @@
 #include <SDL.h>
 
 #include <string>
+#include <iostream>
 
 struct Platform::Window::NativeWindow
 {
@@ -10,9 +11,20 @@ struct Platform::Window::NativeWindow
     SDL_Window* pSDLWindow{ nullptr };
 };
 
+Platform::Window::Window() : m_NativeWindow(std::make_unique<NativeWindow>()){}
+
+Platform::Window::~Window()
+{
+    if (m_NativeWindow->pSDLWindow) 
+    {
+        SDL_DestroyWindow(m_NativeWindow->pSDLWindow);
+    }
+    m_NativeWindow.reset();
+}
+
 void Platform::Window::Init(const CreateWindowInfo& info)
 {
-    if (m_NativeWindow != nullptr) return;
+    if (m_NativeWindow->pSDLWindow) return;
 
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -25,7 +37,7 @@ void Platform::Window::Init(const CreateWindowInfo& info)
 
     SDL_Window* window = SDL_CreateWindow(info.title.c_str(), x, y, info.rect.width, info.rect.height, windowFlags);
 
-    m_NativeWindow = new NativeWindow();
+    m_NativeWindow = std::make_unique<NativeWindow>();
     m_NativeWindow->pSDLWindow = window;
     m_NativeWindow->title = info.title;
 }
@@ -33,16 +45,6 @@ void Platform::Window::Init(const CreateWindowInfo& info)
 std::string Platform::Window::GetTitle() const
 {
     return m_NativeWindow->title;
-}
-
-void Platform::Window::Destroy()
-{
-    if (m_NativeWindow == nullptr) return;
-
-    SDL_DestroyWindow(m_NativeWindow->pSDLWindow);
-
-    delete m_NativeWindow;
-    m_NativeWindow = nullptr;
 }
 
 bool Platform::Window::PollEvents() const
