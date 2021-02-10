@@ -7,14 +7,25 @@
 struct Platform::Window::NativeWindow
 {
     std::string title{};
-    GLFWwindow* window{nullptr};
+    GLFWwindow* window{ nullptr };
 };
+
+Platform::Window::Window() : m_NativeWindow(std::make_unique<NativeWindow>()) {}
+
+Platform::Window::~Window()
+{
+    if(m_NativeWindow->window)
+    {
+        glfwDestroyWindow(m_NativeWindow->window);
+        glfwTerminate();
+    }
+
+    m_NativeWindow.reset();
+}
 
 void Platform::Window::Init(const CreateWindowInfo& info)
 {
-    if (m_NativeWindow != nullptr) return;
-
-    m_NativeWindow = new NativeWindow();
+    if (m_NativeWindow->window != nullptr) return;
 
     glfwInit();
 
@@ -42,13 +53,4 @@ bool Platform::Window::PollEvents() const
     glfwPollEvents();
 
     return !glfwWindowShouldClose(m_NativeWindow->window);
-}
-
-void Platform::Window::Destroy()
-{
-    glfwDestroyWindow(m_NativeWindow->window);
-    glfwTerminate();
-
-    delete m_NativeWindow;
-    m_NativeWindow = nullptr;
 }

@@ -17,8 +17,9 @@ int main()
 
     wnd.Init(windowCreateInfo);
 
-    while(wnd.PollEvents())
+    bool isRunning = true;
+    while(isRunning)
     {
-        
+        isRunning = wnd.PollEvents();
     }
 }
