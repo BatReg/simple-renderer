@@ -17,13 +17,13 @@ set(PLATFORM_HEADERS
 )
 
 if(WIN32)
-	set(PLATFORM_SOURCE_WINDOW
-			src/platform/win32/win32_window.cpp
-		)
-	
-	set(PLATFORM_SOURCE_FILES
-			${PLATFORM_SOURCE_WINDOW}
-		)
+    set(PLATFORM_SOURCE_WINDOW
+            src/platform/win32/win32_window.cpp
+        )
+    
+    set(PLATFORM_SOURCE_FILES
+            ${PLATFORM_SOURCE_WINDOW}
+        )
     set(MAIN_FILE
         src/win32_main.cpp
     )
@@ -34,7 +34,7 @@ source_group("src\\platform\\src" FILES ${PLATFORM_SOURCE_FILES})
 source_group("src" FILES ${MAIN_FILE})
 
 add_executable(SimpleRenderer 
-	${MAIN_FILE}
+    ${MAIN_FILE}
     ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES})
 target_include_directories(SimpleRenderer PRIVATE include)
 
