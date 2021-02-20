@@ -8,8 +8,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-option(USE_SDL "Use SDL2 if TRUE, otherwise use GLFW" ON)
-
 project(SimpleRenderer VERSION 0.0.1)
 
 message(STATUS "GENERATING PROJECT")
@@ -19,15 +17,9 @@ set(PLATFORM_HEADERS
 )
 
 if(WIN32)
-	if(USE_SDL)
-		set(PLATFORM_SOURCE_WINDOW
-			src/platform/win32/win32_window_sdl.cpp
+	set(PLATFORM_SOURCE_WINDOW
+			src/platform/win32/win32_window.cpp
 		)
-	else()
-		set(PLATFORM_SOURCE_WINDOW
-			src/platform/win32/win32_window_glfw.cpp
-		)
-	endif()
 	
 	set(PLATFORM_SOURCE_FILES
 			${PLATFORM_SOURCE_WINDOW}
