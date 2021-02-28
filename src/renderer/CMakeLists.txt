@@ -1,13 +1,26 @@
-cmake_minimum_required(VERSION 3.13.0)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
 project(LowRenderer VERSION 0.0.1)
 
 message(STATUS "GENERATING LOW-LEVEL RENDERER")
+
+set(RENDERER_HEADERS
+    include/renderer/renderer.h
+)
+
+set(RENDERER_SOURCE_FILES
+    vulkan/vk_renderer.cpp
+)
+
+source_group("include" FILES ${RENDERER_HEADERS})
+source_group("src" FILES ${RENDERER_SOURCE_FILES})
+
+add_library(Renderer STATIC 
+    ${RENDERER_HEADERS}
+    ${RENDERER_SOURCE_FILES}
+)
+
+target_include_directories(Renderer PUBLIC include)
+
+find_package(Vulkan REQUIRED)
+target_link_libraries(Renderer PRIVATE Vulkan::Vulkan)
+
+set_target_properties(Renderer PROPERTIES FOLDER "Platform Abstraction Layer")

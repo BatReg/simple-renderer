@@ -1,4 +1,5 @@
 #include "platform/window.h"
+#include "renderer/renderer.h"
 
 #include <Windows.h>
 
