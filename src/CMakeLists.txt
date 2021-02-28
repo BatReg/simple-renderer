@@ -16,7 +16,8 @@ else()
         ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES}
     )
 endif()
-set_target_properties(SimpleRenderer PROPERTIES FOLDER "Application")
 
 add_subdirectory(platform)
 target_link_libraries(SimpleRenderer Platform)
+
+set_target_properties(SimpleRenderer PROPERTIES FOLDER "Application")
