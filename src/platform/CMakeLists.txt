@@ -23,6 +23,7 @@ add_library(Platform STATIC
     ${PLATFORM_HEADERS}
     ${PLATFORM_SOURCE_FILES}
 )
+set_target_properties(Platform PROPERTIES FOLDER "Low-level")
 
 target_include_directories(Platform PUBLIC
     include
