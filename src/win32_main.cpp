@@ -1,6 +1,12 @@
 #include "platform/window.h"
 
-int main()
+#include <Windows.h>
+
+int CALLBACK WinMain(
+    _In_ HINSTANCE hInstance,
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_ LPSTR lpCmdLine,
+    _In_ int nCmdShow)
 {
     Platform::Window wnd{};
 
@@ -13,12 +19,12 @@ int main()
     Platform::CreateWindowInfo windowCreateInfo{};
     windowCreateInfo.title = "Super Awesome Title";
     windowCreateInfo.rect = windowRect;
-    windowCreateInfo.rendererAPI = Platform::RendererAPI::OpenGL;
+    windowCreateInfo.rendererAPI = Platform::RendererAPI::Vulkan;
 
     wnd.Init(windowCreateInfo);
 
     bool isRunning = true;
-    while(isRunning)
+    while (isRunning)
     {
         isRunning = wnd.PollEvents();
     }

@@ -33,9 +33,18 @@ source_group("src\\platform\\include" FILES ${PLATFORM_HEADERS})
 source_group("src\\platform\\src" FILES ${PLATFORM_SOURCE_FILES})
 source_group("src" FILES ${MAIN_FILE})
 
-add_executable(SimpleRenderer 
-    ${MAIN_FILE}
-    ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES})
+if(WIN32)
+    add_executable(SimpleRenderer 
+        WIN32
+        ${MAIN_FILE}
+        ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES}
+    )
+else()
+    add_executable(SimpleRenderer 
+        ${MAIN_FILE}
+        ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES}
+    )
+endif()
 target_include_directories(SimpleRenderer PRIVATE include)
 
 add_subdirectory(external)
