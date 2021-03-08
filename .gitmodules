@@ -1,3 +1,3 @@
 [submodule "src/platform/external/sdl"]
 	path = src/platform/external/sdl
-	url = https://github.com/spurious/SDL-mirror.git
+	url = https://github.com/libsdl-org/SDL
