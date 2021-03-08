@@ -4,16 +4,9 @@ if(WIN32)
     )
 endif()
 
-if(WIN32)
-    add_executable(SimpleRenderer 
-        WIN32
-        ${MAIN_FILE}
-    )
-else()
-    add_executable(SimpleRenderer 
-        ${MAIN_FILE}
-    )
-endif()
+add_executable(SimpleRenderer 
+    ${MAIN_FILE}
+)
 
 add_subdirectory(platform)
 target_link_libraries(SimpleRenderer Platform)

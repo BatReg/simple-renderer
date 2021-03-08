@@ -1,15 +1,10 @@
 #include "platform/window.h"
 #include "renderer/renderer.h"
 
-#include <Windows.h>
-
-int CALLBACK WinMain(
-    _In_ HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_ LPSTR lpCmdLine,
-    _In_ int nCmdShow)
+int main()
 {
     Platform::Window wnd{};
+    Renderer::Renderer renderer{};
 
     Platform::Rect windowRect{};
     windowRect.x = 0;
@@ -24,9 +19,13 @@ int CALLBACK WinMain(
 
     wnd.Init(windowCreateInfo);
 
+    renderer.Init();
+
     bool isRunning = true;
     while (isRunning)
     {
         isRunning = wnd.PollEvents();
     }
+
+    renderer.Destroy();
 }
