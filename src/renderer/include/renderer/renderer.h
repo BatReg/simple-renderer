@@ -7,5 +7,8 @@ namespace Renderer
 
     class Renderer
     {
+    public:
+        void Init();
+        void Destroy();
     };
 }
