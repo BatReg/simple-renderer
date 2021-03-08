@@ -8,6 +8,8 @@ set(RENDERER_HEADERS
 
 set(RENDERER_SOURCE_FILES
     vulkan/vk_renderer.cpp
+    vulkan/external/VkBootstrap.h
+    vulkan/external/VkBootstrap.cpp
 )
 
 source_group("include" FILES ${RENDERER_HEADERS})
