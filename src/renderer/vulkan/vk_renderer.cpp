@@ -18,8 +18,10 @@ namespace Renderer
 
         bool m_isInitalized;
 
-        VkInstance                  m_Instance;
-        VkDebugUtilsMessengerEXT    m_DebugMessenger;
+        VkInstance m_Instance;
+        VkDebugUtilsMessengerEXT m_DebugMessenger;
+        VkDevice m_Device;
+        VkPhysicalDevice m_PhysicalDevice;
     };
 
     Renderer::Renderer() : m_NativeRenderer(std::make_unique<NativeRenderer>()) {}
@@ -61,10 +63,23 @@ namespace Renderer
             .require_api_version(1, 1, 0)
             .use_default_debug_messenger()
             .build();
-        
+
         vkb::Instance vkbInstance = instanceRet.value();
 
         m_Instance = vkbInstance.instance;
         m_DebugMessenger = vkbInstance.debug_messenger;
+
+        uint32_t deviceCount = 0;
+        vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
+
+        std::vector<VkPhysicalDevice> devices(deviceCount);
+        vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
+
+        VkPhysicalDevice device = devices[0];
+
+        VkPhysicalDeviceProperties deviceProperties;
+        vkGetPhysicalDeviceProperties(device, &deviceProperties);
+
+        std::cout << deviceProperties.deviceName << std::endl;
     }
 }
