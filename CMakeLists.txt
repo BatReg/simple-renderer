@@ -8,36 +8,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 project(SimpleRenderer VERSION 0.0.1)
 
 message(STATUS "GENERATING PROJECT")
 
-set(PLATFORM_HEADERS 
-    include/platform/window.h
-)
-
-if(WIN32)
-    set(PLATFORM_SOURCE_WINDOW
-            src/platform/win32/win32_window.cpp
-        )
-    
-    set(PLATFORM_SOURCE_FILES
-            ${PLATFORM_SOURCE_WINDOW}
-        )
-    set(MAIN_FILE
-        src/win32_main.cpp
-    )
-endif()
-
-source_group("src\\platform\\include" FILES ${PLATFORM_HEADERS})
-source_group("src\\platform\\src" FILES ${PLATFORM_SOURCE_FILES})
-source_group("src" FILES ${MAIN_FILE})
-
-add_executable(SimpleRenderer 
-    ${MAIN_FILE}
-    ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES})
-target_include_directories(SimpleRenderer PRIVATE include)
-
-add_subdirectory(external)
+add_subdirectory(src)
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SimpleRenderer)
