@@ -8,13 +8,13 @@ set(PLATFORM_HEADERS
 
 if(WIN32)
     set(PLATFORM_SOURCE_WINDOW
-            win32/win32_window.cpp
-        )
-    
-    set(PLATFORM_SOURCE_FILES
-            ${PLATFORM_SOURCE_WINDOW}
-        )
+        win32/win32_window.cpp
+    )
 endif()
+
+set(PLATFORM_SOURCE_FILES
+    ${PLATFORM_SOURCE_WINDOW}
+)
 
 source_group("include" FILES ${PLATFORM_HEADERS})
 source_group("src" FILES ${PLATFORM_SOURCE_FILES})
