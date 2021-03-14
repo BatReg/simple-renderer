@@ -30,15 +30,16 @@ namespace Platform
     class Window
     {
     public:
-        Window();
+        Window() noexcept;
         Window(const Window&) = delete;
         Window& operator=(const Window&) = delete;
 
-        ~Window();
+        ~Window() noexcept;
 
-        void        Init(const CreateWindowInfo& info);
-        std::string GetTitle() const;
-        bool        PollEvents() const;
+        void        Init(const CreateWindowInfo& info) noexcept;
+        std::string GetTitle() const noexcept;
+        void*       GetNativeHandle() const noexcept;
+        bool        PollEvents() const noexcept;
 
     private:
         struct NativeWindow;

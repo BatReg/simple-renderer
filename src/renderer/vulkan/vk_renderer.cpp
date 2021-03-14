@@ -2,6 +2,7 @@
 
 #include <vulkan/vulkan.h>
 #include "external/VkBootstrap.h"
+#include <Windows.h>
 
 #include <iostream>
 
@@ -10,51 +11,64 @@ namespace Renderer
     class Renderer::NativeRenderer
     {
     public:
-        void Init();
-        void Destroy();
+        NativeRenderer(const Platform::Window& window) noexcept;
+
+        void Init() noexcept;
+        void Destroy() noexcept;
 
     private:
-        void InitVulkan();
+        void InitVulkan() noexcept;
+        void CreateSurface() noexcept;
 
-        bool m_isInitalized;
+        bool                        m_isInitalized{ false };
 
-        VkInstance m_Instance;
-        VkDebugUtilsMessengerEXT m_DebugMessenger;
-        VkDevice m_Device;
-        VkPhysicalDevice m_PhysicalDevice;
+        const Platform::Window&     m_Window;
+
+        VkInstance                  m_Instance;
+        VkDebugUtilsMessengerEXT    m_DebugMessenger;
+        VkDevice                    m_Device;
+        VkPhysicalDevice            m_PhysicalDevice;
+        VkSurfaceKHR                m_Surface;
     };
 
-    Renderer::Renderer() : m_NativeRenderer(std::make_unique<NativeRenderer>()) {}
+    Renderer::Renderer(const Platform::Window& window) noexcept :
+        m_Window(window),
+        m_NativeRenderer(std::make_unique<NativeRenderer>(window)) {}
 
-    Renderer::~Renderer()
+    Renderer::~Renderer() noexcept
     {
         m_NativeRenderer.reset();
     }
 
-    void Renderer::Init()
+    void Renderer::Init() noexcept
     {
         m_NativeRenderer->Init();
     }
 
-    void Renderer::Destroy()
+    void Renderer::Destroy() noexcept
     {
         m_NativeRenderer->Destroy();
     }
 
-    void Renderer::NativeRenderer::Init()
+    Renderer::NativeRenderer::NativeRenderer(const Platform::Window& window) noexcept
+        : m_Window(window) {}
+
+    void Renderer::NativeRenderer::Init() noexcept
     {
         InitVulkan();
+        CreateSurface();
         std::cout << "Vulkan Renderer initialized" << std::endl;
     }
 
-    void Renderer::NativeRenderer::Destroy()
+    void Renderer::NativeRenderer::Destroy() noexcept
     {
+        vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
         vkb::destroy_debug_utils_messenger(m_Instance, m_DebugMessenger, nullptr);
         vkDestroyInstance(m_Instance, nullptr);
         std::cout << "Vulkan Renderer destroyed" << std::endl;
     }
 
-    void Renderer::NativeRenderer::InitVulkan()
+    void Renderer::NativeRenderer::InitVulkan() noexcept
     {
         vkb::InstanceBuilder instanceBuilder;
         auto instanceRet = instanceBuilder
@@ -81,5 +95,18 @@ namespace Renderer
         vkGetPhysicalDeviceProperties(device, &deviceProperties);
 
         std::cout << deviceProperties.deviceName << std::endl;
+    }
+
+    void Renderer::NativeRenderer::CreateSurface() noexcept
+    {
+        HWND handle = static_cast<HWND>(m_Window.GetNativeHandle());
+        VkWin32SurfaceCreateInfoKHR info{};
+        info.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+        info.hwnd = handle;
+        info.hinstance = GetModuleHandle(nullptr);
+
+        VkResult res = vkCreateWin32SurfaceKHR(m_Instance, &info, nullptr, &m_Surface);
+
+        std::cout << "SURFACE_CREATED::" << res << std::endl;
     }
 }

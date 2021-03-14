@@ -1,5 +1,7 @@
 #pragma once
 
+#include "platform/window.h"
+
 #include <memory>
 
 namespace Renderer
@@ -7,18 +9,19 @@ namespace Renderer
     class Renderer
     {
     public:
-        Renderer();
-        Renderer(const Renderer &) = delete;
-        Renderer &operator=(const Renderer &) = delete;
+        Renderer(const Platform::Window&) noexcept;
+        Renderer(const Renderer&) = delete;
+        Renderer &operator=(const Renderer&) = delete;
 
-        ~Renderer();
+        ~Renderer() noexcept;
 
-        void Init();
-        void Destroy();
+        void Init() noexcept;
+        void Destroy() noexcept;
 
     private:
         class NativeRenderer;
 
+        const Platform::Window&         m_Window;
         std::unique_ptr<NativeRenderer> m_NativeRenderer;
     };
 }
