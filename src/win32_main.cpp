@@ -4,7 +4,7 @@
 int main()
 {
     Platform::Window wnd{};
-    Renderer::Renderer renderer{};
+    Renderer::Renderer renderer{wnd};
 
     Platform::Rect windowRect{};
     windowRect.x = 0;

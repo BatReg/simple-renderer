@@ -12,6 +12,10 @@ set(RENDERER_SOURCE_FILES
     vulkan/external/VkBootstrap.cpp
 )
 
+if(WIN32)
+    add_compile_definitions(VK_USE_PLATFORM_WIN32_KHR)
+endif()
+
 source_group("include" FILES ${RENDERER_HEADERS})
 source_group("src" FILES ${RENDERER_SOURCE_FILES})
 
@@ -24,5 +28,7 @@ target_include_directories(Renderer PUBLIC include)
 
 find_package(Vulkan REQUIRED)
 target_link_libraries(Renderer PRIVATE Vulkan::Vulkan)
+
+target_link_libraries(Renderer PRIVATE Platform)
 
 set_target_properties(Renderer PROPERTIES FOLDER "Platform Abstraction Layer")
