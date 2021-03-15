@@ -8,7 +8,7 @@ set(PLATFORM_HEADERS
 
 if(WIN32)
     set(PLATFORM_SOURCE_WINDOW
-        win32/win32_window.cpp
+        src/win32/win32_window.cpp
     )
 endif()
 
