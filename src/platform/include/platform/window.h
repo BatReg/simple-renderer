@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <string>
 
 namespace Platform
@@ -38,12 +37,16 @@ namespace Platform
 
         void        Init(const CreateWindowInfo& info) noexcept;
         std::string GetTitle() const noexcept;
-        void*       GetNativeHandle() const noexcept;
         bool        PollEvents() const noexcept;
 
     private:
         struct NativeWindow;
 
-        std::unique_ptr<NativeWindow> m_NativeWindow;
+        NativeWindow* m_Handle;
+
+        NativeWindow* GetHandle() const
+        {
+            return m_Handle;
+        }
     };
 };

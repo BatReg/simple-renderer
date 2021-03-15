@@ -6,13 +6,25 @@ set(PLATFORM_HEADERS
     include/platform/window.h
 )
 
+set(PLATFORM_SOURCE_COMMON
+    src/internal_window.h
+)
+
 if(WIN32)
+    add_compile_definitions(PLATFORM_WIN32)
+
+    set(PLATFORM_SOURCE_BASE
+        src/win32/win32_platform.h
+    )
+
     set(PLATFORM_SOURCE_WINDOW
         src/win32/win32_window.cpp
     )
 endif()
 
 set(PLATFORM_SOURCE_FILES
+    ${PLATFORM_SOURCE_COMMON}
+    ${PLATFORM_SOURCE_BASE}
     ${PLATFORM_SOURCE_WINDOW}
 )
 

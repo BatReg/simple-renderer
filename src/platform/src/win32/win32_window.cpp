@@ -1,35 +1,37 @@
 #include "platform/window.h"
+#include "../internal_window.h"
 
 #include <SDL.h>
 #include <SDL_syswm.h>
 
 #include <string>
 #include <iostream>
-#include <memory>
 
 namespace Platform
 {
-    struct Window::NativeWindow
+    Window::Window() noexcept
     {
-        std::string title{};
-        SDL_Window* pSDLWindow{ nullptr };
-        HWND        handle{};
-    };
+        _NativeWindow* nativeWindow = new _NativeWindow();
 
-    Window::Window() noexcept : m_NativeWindow(std::make_unique<NativeWindow>()) {}
+        m_Handle = reinterpret_cast<NativeWindow*>(nativeWindow);
+    }
 
     Window::~Window() noexcept
     {
-        if (m_NativeWindow->pSDLWindow)
+        _NativeWindow* nativeWindow = (_NativeWindow*)m_Handle;
+
+        if (nativeWindow->win32.pSDLWindow)
         {
-            SDL_DestroyWindow(m_NativeWindow->pSDLWindow);
+            SDL_DestroyWindow(nativeWindow->win32.pSDLWindow);
         }
-        m_NativeWindow.reset();
+
+        delete nativeWindow;
     }
 
     void Window::Init(const CreateWindowInfo& info) noexcept
     {
-        if (m_NativeWindow->pSDLWindow) return;
+        _NativeWindow* nativeWindow = (_NativeWindow*)m_Handle;
+        if (nativeWindow->win32.pSDLWindow) return;
 
         SDL_Init(SDL_INIT_VIDEO);
 
@@ -47,20 +49,15 @@ namespace Platform
         SDL_GetWindowWMInfo(window, &wmInfo);
         HWND hwnd = wmInfo.info.win.window;
 
-        m_NativeWindow = std::make_unique<NativeWindow>();
-        m_NativeWindow->pSDLWindow = window;
-        m_NativeWindow->title = info.title;
-        m_NativeWindow->handle = hwnd;
+        nativeWindow->win32.pSDLWindow = window;
+        nativeWindow->title = info.title;
+        nativeWindow->win32.handle = hwnd;
     }
 
     std::string Window::GetTitle() const noexcept
     {
-        return m_NativeWindow->title;
-    }
-
-    void* Window::GetNativeHandle() const noexcept
-    {
-        return &(m_NativeWindow->handle);
+        _NativeWindow* nativeWindow = (_NativeWindow*)m_Handle;
+        return nativeWindow->title;
     }
 
     bool Window::PollEvents() const noexcept
