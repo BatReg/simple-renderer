@@ -62,7 +62,6 @@ namespace Renderer
 
     void Renderer::NativeRenderer::Destroy() noexcept
     {
-        vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
         vkb::destroy_debug_utils_messenger(m_Instance, m_DebugMessenger, nullptr);
         vkDestroyInstance(m_Instance, nullptr);
         std::cout << "Vulkan Renderer destroyed" << std::endl;
@@ -99,14 +98,14 @@ namespace Renderer
 
     void Renderer::NativeRenderer::CreateSurface() noexcept
     {
-        HWND handle = static_cast<HWND>(m_Window.GetNativeHandle());
-        VkWin32SurfaceCreateInfoKHR info{};
-        info.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-        info.hwnd = handle;
-        info.hinstance = GetModuleHandle(nullptr);
+        //HWND handle = static_cast<HWND>(m_Window.GetHandle());
+        //VkWin32SurfaceCreateInfoKHR info{};
+        //info.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+        //info.hwnd = handle;
+        //info.hinstance = GetModuleHandle(nullptr);
 
-        VkResult res = vkCreateWin32SurfaceKHR(m_Instance, &info, nullptr, &m_Surface);
+        //VkResult res = vkCreateWin32SurfaceKHR(m_Instance, &info, nullptr, &m_Surface);
 
-        std::cout << "SURFACE_CREATED::" << res << std::endl;
+        //std::cout << "SURFACE_CREATED::" << res << std::endl;
     }
 }
