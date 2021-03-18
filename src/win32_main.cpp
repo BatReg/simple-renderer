@@ -21,10 +21,9 @@ int main()
 
     renderer.Init();
 
-    bool isRunning = true;
-    while (isRunning)
+    while (!wnd.ShouldClose())
     {
-        isRunning = wnd.PollEvents();
+        wnd.PollEvents();
     }
 
     renderer.Destroy();
