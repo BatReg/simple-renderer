@@ -44,5 +44,7 @@ namespace Platform
         struct NativeWindow;
 
         NativeWindow* m_Handle;
+
+        friend class Vulkan;
     };
 };
