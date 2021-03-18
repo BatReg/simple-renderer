@@ -42,7 +42,8 @@ namespace Platform
         const int x = (info.rect.x == 0) * SDL_WINDOWPOS_UNDEFINED + info.rect.x;
         const int y = (info.rect.y == 0) * SDL_WINDOWPOS_UNDEFINED + info.rect.y;
 
-        SDL_Window* window = SDL_CreateWindow(info.title.c_str(), x, y, info.rect.width, info.rect.height, windowFlags);
+        SDL_Window* window = SDL_CreateWindow(info.title.c_str(), x, y, info.rect.width, 
+            info.rect.height, windowFlags);
 
         SDL_SysWMinfo wmInfo;
         SDL_VERSION(&wmInfo.version);
@@ -54,21 +55,29 @@ namespace Platform
         nativeWindow->win32.handle = hwnd;
     }
 
+    bool Window::ShouldClose() const noexcept
+    {
+        _NativeWindow* nativeWindow = (_NativeWindow*)m_Handle;
+        return nativeWindow->shouldClose;
+    }
+
     std::string Window::GetTitle() const noexcept
     {
         _NativeWindow* nativeWindow = (_NativeWindow*)m_Handle;
         return nativeWindow->title;
     }
 
-    bool Window::PollEvents() const noexcept
+    void Window::PollEvents() const noexcept
     {
+        _NativeWindow* nativeWindow = (_NativeWindow*)m_Handle;
         SDL_Event e;
 
         while (SDL_PollEvent(&e))
         {
-            if (e.type == SDL_QUIT) return false;
+            if (e.type == SDL_QUIT)
+            {
+                nativeWindow->shouldClose = true;
+            }
         }
-
-        return true;
     }
 }

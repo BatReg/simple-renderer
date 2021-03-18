@@ -36,17 +36,13 @@ namespace Platform
         ~Window() noexcept;
 
         void        Init(const CreateWindowInfo& info) noexcept;
+        bool        ShouldClose() const noexcept;
         std::string GetTitle() const noexcept;
-        bool        PollEvents() const noexcept;
+        void        PollEvents() const noexcept;
 
     private:
         struct NativeWindow;
 
         NativeWindow* m_Handle;
-
-        NativeWindow* GetHandle() const
-        {
-            return m_Handle;
-        }
     };
 };

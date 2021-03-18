@@ -13,7 +13,8 @@ namespace Platform
     struct _NativeWindow
     {
         std::string title{};
+        bool        shouldClose{};
 
-        NATIVE_STATE_WINDOW;
+        NATIVE_WINDOW_STATE;
     };
 }
