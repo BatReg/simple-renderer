@@ -53,6 +53,7 @@ namespace Platform
         nativeWindow->win32.pSDLWindow = window;
         nativeWindow->title = info.title;
         nativeWindow->win32.handle = hwnd;
+        nativeWindow->win32.instance = GetModuleHandle(nullptr);
     }
 
     bool Window::ShouldClose() const noexcept
