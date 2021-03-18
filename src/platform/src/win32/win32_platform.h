@@ -10,6 +10,7 @@ namespace Platform
     struct _NativeWindowWin32
     {
         SDL_Window* pSDLWindow{ nullptr };
-        HWND        handle{};
+        HWND        handle;
+        HINSTANCE   instance;
     };
 }
