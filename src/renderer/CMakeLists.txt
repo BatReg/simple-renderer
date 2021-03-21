@@ -2,9 +2,7 @@ project(LowRenderer VERSION 0.0.1)
 
 message(STATUS "GENERATING LOW-LEVEL RENDERER")
 
-set(RENDERER_HEADERS include/renderer/renderer.h)
-
-add_library(Renderer STATIC ${RENDERER_HEADERS})
+add_library(Renderer STATIC include/renderer/renderer.h)
 
 target_include_directories(Renderer PUBLIC include)
 target_link_libraries(Renderer PRIVATE Platform)
