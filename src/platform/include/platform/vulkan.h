@@ -9,6 +9,6 @@ namespace Platform
     class Vulkan
     {
     public:
-        static VkResult CreateSurface(const Window& window, const VkInstance& instance, VkSurfaceKHR* surface);
+        static VkResult CreateSurface(const Window& window, const VkInstance& instance, VkSurfaceKHR* surface) noexcept;
     };
 }

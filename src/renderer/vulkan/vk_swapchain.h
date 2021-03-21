@@ -20,10 +20,10 @@ namespace Renderer::Vulkan
         SwapChain(const SwapChain&) = delete;
         SwapChain& operator=(const SwapChain&) = delete;
 
-        void Connect(VkInstance instance, VkPhysicalDevice physicalDevice, VkDevice device) noexcept;
+        void Init(VkInstance instance, VkPhysicalDevice physicalDevice, VkDevice device) noexcept;
         void CreateSurface(const Platform::Window& window) noexcept;
-        void CreateSwapchain(const uint32_t& width, const uint32_t& height, bool vSync = false) noexcept;
-        void Dispose() noexcept;
+        void CreateSwapChain(const uint32_t& width, const uint32_t& height, bool vSync = false) noexcept;
+        void Destroy() noexcept;
 
         VkSurfaceKHR GetSurface() const noexcept
         {

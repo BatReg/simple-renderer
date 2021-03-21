@@ -10,7 +10,7 @@
 
 namespace Platform
 {
-    VkResult Vulkan::CreateSurface(const Window& window, const VkInstance& instance, VkSurfaceKHR* surface)
+    VkResult Vulkan::CreateSurface(const Window& window, const VkInstance& instance, VkSurfaceKHR* surface) noexcept
     {
         _NativeWindow* nativeWindow = (_NativeWindow*)window.m_Handle;
 

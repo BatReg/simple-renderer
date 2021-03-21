@@ -1,7 +1,6 @@
 #include <renderer/renderer.h>
 #include "vk_swapchain.h"
 
-#include <platform/vulkan.h>
 #include <vulkan/vulkan.h>
 #include "external/VkBootstrap.h"
 
@@ -62,7 +61,8 @@ namespace Renderer
 
     void Renderer::NativeRenderer::Destroy() noexcept
     {
-        m_SwapChain.Dispose();
+        m_SwapChain.Destroy();
+
         vkb::destroy_debug_utils_messenger(m_Instance, m_DebugMessenger, nullptr);
         vkDestroyInstance(m_Instance, nullptr);
         std::cout << "Vulkan Renderer destroyed" << std::endl;
@@ -96,7 +96,7 @@ namespace Renderer
 
         std::cout << deviceProperties.deviceName << std::endl;
 
-        m_SwapChain.Connect(m_Instance, m_PhysicalDevice, m_Device);
+        m_SwapChain.Init(m_Instance, m_PhysicalDevice, m_Device);
         m_SwapChain.CreateSurface(m_Window);
     }
 }

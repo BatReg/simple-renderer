@@ -5,7 +5,7 @@
 
 namespace Renderer::Vulkan
 {
-    void SwapChain::Connect(VkInstance instance, VkPhysicalDevice physicalDevice, VkDevice device) noexcept
+    void SwapChain::Init(VkInstance instance, VkPhysicalDevice physicalDevice, VkDevice device) noexcept
     {
         m_Instance = instance;
         m_PhysicalDevice = physicalDevice;
@@ -14,17 +14,14 @@ namespace Renderer::Vulkan
 
     void SwapChain::CreateSurface(const Platform::Window& window) noexcept
     {
-        VkResult r = Platform::Vulkan::CreateSurface(window, m_Instance, &m_Surface);
-        VK_CHECK_RESULT(r);
-
-        std::cout << "Create Surface: " << (r == VK_SUCCESS) << std::endl;
+        VK_CHECK_RESULT(Platform::Vulkan::CreateSurface(window, m_Instance, &m_Surface));
     }
 
-    void SwapChain::CreateSwapchain(const uint32_t& width, const uint32_t& height, bool vSync) noexcept
+    void SwapChain::CreateSwapChain(const uint32_t& width, const uint32_t& height, bool vSync) noexcept
     {
     }
 
-    void SwapChain::Dispose() noexcept
+    void SwapChain::Destroy() noexcept
     {
         if(m_Surface != VK_NULL_HANDLE)
         {
