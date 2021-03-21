@@ -47,5 +47,4 @@ namespace Platform
 
         friend class Vulkan;
     };
-}
-;
+};
