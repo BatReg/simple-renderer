@@ -16,12 +16,11 @@ namespace Renderer::Vulkan
     class SwapChain
     {
     public:
-        SwapChain(VkInstance instance, VkPhysicalDevice physicalDevice, VkDevice device) noexcept;
-
-        SwapChain() = delete;
+        SwapChain() = default;
         SwapChain(const SwapChain&) = delete;
         SwapChain& operator=(const SwapChain&) = delete;
 
+        void Connect(VkInstance instance, VkPhysicalDevice physicalDevice, VkDevice device) noexcept;
         void CreateSurface(const Platform::Window& window) noexcept;
         void CreateSwapchain(const uint32_t& width, const uint32_t& height, bool vSync = false) noexcept;
         void Dispose() noexcept;
