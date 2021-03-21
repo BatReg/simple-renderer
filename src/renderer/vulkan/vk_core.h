@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #define VK_CHECK_RESULT(f)                                                                                       \
 {                                                                                                                \
     VkResult res = (f);                                                                                          \
