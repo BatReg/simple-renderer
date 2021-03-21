@@ -1,4 +1,5 @@
-#include "renderer/renderer.h"
+#include <renderer/renderer.h>
+#include "vk_swapchain.h"
 
 #include <platform/vulkan.h>
 #include <vulkan/vulkan.h>
@@ -18,7 +19,6 @@ namespace Renderer
 
     private:
         void InitVulkan() noexcept;
-        void CreateSurface() noexcept;
 
         bool                        m_isInitalized{ false };
 
@@ -28,7 +28,8 @@ namespace Renderer
         VkDebugUtilsMessengerEXT    m_DebugMessenger;
         VkDevice                    m_Device;
         VkPhysicalDevice            m_PhysicalDevice;
-        VkSurfaceKHR                m_Surface;
+
+        Vulkan::SwapChain           m_SwapChain{};
     };
 
     Renderer::Renderer(const Platform::Window& window) noexcept :
@@ -56,13 +57,12 @@ namespace Renderer
     void Renderer::NativeRenderer::Init() noexcept
     {
         InitVulkan();
-        CreateSurface();
         std::cout << "Vulkan Renderer initialized" << std::endl;
     }
 
     void Renderer::NativeRenderer::Destroy() noexcept
     {
-        vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
+        m_SwapChain.Dispose();
         vkb::destroy_debug_utils_messenger(m_Instance, m_DebugMessenger, nullptr);
         vkDestroyInstance(m_Instance, nullptr);
         std::cout << "Vulkan Renderer destroyed" << std::endl;
@@ -95,12 +95,8 @@ namespace Renderer
         vkGetPhysicalDeviceProperties(device, &deviceProperties);
 
         std::cout << deviceProperties.deviceName << std::endl;
-    }
 
-    void Renderer::NativeRenderer::CreateSurface() noexcept
-    {
-        VkResult res = Platform::Vulkan::CreateSurface(m_Window, m_Instance, &m_Surface);
-
-        std::cout << "SURFACE_CREATED::" << (res == VK_SUCCESS) << std::endl;
+        m_SwapChain.Connect(m_Instance, m_PhysicalDevice, m_Device);
+        m_SwapChain.CreateSurface(m_Window);
     }
 }
