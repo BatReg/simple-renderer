@@ -1,4 +1,5 @@
-target_sources(Renderer PRIVATE vk_renderer.cpp
+target_sources(Renderer PRIVATE vk_core.h
+                                vk_renderer.cpp
                                 vk_swapchain.h
                                 vk_swapchain.cpp
 
