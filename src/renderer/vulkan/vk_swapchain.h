@@ -1,16 +1,17 @@
 #pragma once
 
-#include <platform/window.h>
 #include <vulkan/vulkan.h>
 
 #include <vector>
 
 namespace Renderer::Vulkan
 {
-    struct SwapChainBuffer
+    struct SwapChainInitInfo
     {
-        VkImage     image;
-        VkImageView view;
+        VkInstance          instance;
+        VkPhysicalDevice    physicalDevice;
+        VkDevice            device;
+        VkSurfaceKHR        surface;
     };
 
     class SwapChain
@@ -20,8 +21,7 @@ namespace Renderer::Vulkan
         SwapChain(const SwapChain&) = delete;
         SwapChain& operator=(const SwapChain&) = delete;
 
-        void Init(VkInstance instance, VkPhysicalDevice physicalDevice, VkDevice device) noexcept;
-        void CreateSurface(const Platform::Window& window) noexcept;
+        void Init(const SwapChainInitInfo& info) noexcept;
         void CreateSwapChain(const uint32_t& width, const uint32_t& height, bool vSync = false) noexcept;
         void Destroy() noexcept;
 
@@ -36,12 +36,8 @@ namespace Renderer::Vulkan
         VkPhysicalDevice                m_PhysicalDevice;
         VkSurfaceKHR                    m_Surface;
         VkFormat                        m_ColorFormat;
-        VkColorSpaceKHR                 m_ColorSpace;
-        VkSwapchainKHR                  m_SwapChain = VK_NULL_HANDLE;
-
-        uint32_t                        m_ImageCount;
-        uint32_t                        m_QueueNodeIndex = UINT32_MAX;
+        VkSwapchainKHR                  m_SwapChain;
         std::vector<VkImage>            m_Images;
-        std::vector<SwapChainBuffer>    m_Buffers;
+        std::vector<VkImageView>        m_ImageViews;
     };
 }
