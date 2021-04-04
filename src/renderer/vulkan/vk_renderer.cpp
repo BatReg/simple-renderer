@@ -1,4 +1,7 @@
 #include <renderer/renderer.h>
+
+#include <platform/vulkan.h>
+#include "vk_core.h"
 #include "vk_swapchain.h"
 
 #include <vulkan/vulkan.h>
@@ -18,6 +21,7 @@ namespace Renderer
 
     private:
         void InitVulkan() noexcept;
+        void InitSwapchain() noexcept;
 
         bool                        m_isInitalized{ false };
 
@@ -27,6 +31,7 @@ namespace Renderer
         VkDebugUtilsMessengerEXT    m_DebugMessenger;
         VkDevice                    m_Device;
         VkPhysicalDevice            m_PhysicalDevice;
+        VkSurfaceKHR                m_Surface;
 
         Vulkan::SwapChain           m_SwapChain{};
     };
@@ -56,6 +61,7 @@ namespace Renderer
     void Renderer::NativeRenderer::Init() noexcept
     {
         InitVulkan();
+        InitSwapchain();
         std::cout << "Vulkan Renderer initialized" << std::endl;
     }
 
@@ -63,6 +69,7 @@ namespace Renderer
     {
         m_SwapChain.Destroy();
 
+        vkDestroyDevice(m_Device, nullptr);
         vkb::destroy_debug_utils_messenger(m_Instance, m_DebugMessenger, nullptr);
         vkDestroyInstance(m_Instance, nullptr);
         std::cout << "Vulkan Renderer destroyed" << std::endl;
@@ -83,20 +90,35 @@ namespace Renderer
         m_Instance = vkbInstance.instance;
         m_DebugMessenger = vkbInstance.debug_messenger;
 
-        uint32_t deviceCount = 0;
-        vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
+        VK_CHECK_RESULT(Platform::Vulkan::CreateSurface(m_Window, m_Instance, &m_Surface));
 
-        std::vector<VkPhysicalDevice> devices(deviceCount);
-        vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
+        vkb::PhysicalDeviceSelector selector{ vkbInstance };
+        vkb::PhysicalDevice physicalDevice = selector
+            .set_minimum_version(1, 1)
+            .set_surface(m_Surface)
+            .select()
+            .value();
 
-        VkPhysicalDevice device = devices[0];
+        std::cout << "GPU: " << physicalDevice.properties.deviceName << std::endl;
 
-        VkPhysicalDeviceProperties deviceProperties;
-        vkGetPhysicalDeviceProperties(device, &deviceProperties);
+        vkb::DeviceBuilder deviceBuilder{ physicalDevice };
+        vkb::Device vkbDevice = deviceBuilder.build().value();
 
-        std::cout << deviceProperties.deviceName << std::endl;
+        m_PhysicalDevice = physicalDevice.physical_device;
+        m_Device = vkbDevice.device;
+    }
 
-        m_SwapChain.Init(m_Instance, m_PhysicalDevice, m_Device);
-        m_SwapChain.CreateSurface(m_Window);
+    void Renderer::NativeRenderer::InitSwapchain() noexcept
+    {
+        Vulkan::SwapChainInitInfo swapChainInitInfo{};
+        swapChainInitInfo.instance = m_Instance;
+        swapChainInitInfo.physicalDevice = m_PhysicalDevice;
+        swapChainInitInfo.device = m_Device;
+        swapChainInitInfo.surface = m_Surface;
+        
+        m_SwapChain.Init(swapChainInitInfo);
+
+        // TODO (Nikita): implement passing window's width and height
+        m_SwapChain.CreateSwapChain(800, 600, true);
     }
 }
