@@ -7,10 +7,10 @@ namespace Renderer::Vulkan
 {
     void SwapChain::Init(const SwapChainInitInfo& info) noexcept
     {
-        m_Instance = info.instance;
-        m_PhysicalDevice = info.physicalDevice;
-        m_Device = info.device;
-        m_Surface = info.surface;
+        m_Instance          = info.instance;
+        m_PhysicalDevice    = info.physicalDevice;
+        m_Device            = info.device;
+        m_Surface           = info.surface;
     }
 
     void SwapChain::CreateSwapChain(const uint32_t& width, const uint32_t& height, bool vSync) noexcept
@@ -24,11 +24,10 @@ namespace Renderer::Vulkan
             .build()
             .value();
 
-        m_SwapChain = vkbSwapchain.swapchain;
-        m_Images = vkbSwapchain.get_images().value();
-        m_ImageViews = vkbSwapchain.get_image_views().value();
-
-        m_ColorFormat = vkbSwapchain.image_format;
+        m_SwapChain     = vkbSwapchain.swapchain;
+        m_Images        = vkbSwapchain.get_images().value();
+        m_ImageViews    = vkbSwapchain.get_image_views().value();
+        m_ColorFormat   = vkbSwapchain.image_format;
     }
 
     void SwapChain::Destroy() noexcept

@@ -31,13 +31,13 @@ namespace Renderer::Vulkan
         }
 
     private:
-        VkInstance                      m_Instance;
-        VkDevice                        m_Device;
-        VkPhysicalDevice                m_PhysicalDevice;
-        VkSurfaceKHR                    m_Surface;
-        VkFormat                        m_ColorFormat;
-        VkSwapchainKHR                  m_SwapChain;
-        std::vector<VkImage>            m_Images;
-        std::vector<VkImageView>        m_ImageViews;
+        VkInstance                      m_Instance{ nullptr };
+        VkDevice                        m_Device{ nullptr };
+        VkPhysicalDevice                m_PhysicalDevice{ nullptr };
+        VkSurfaceKHR                    m_Surface{ nullptr };
+        VkFormat                        m_ColorFormat{};
+        VkSwapchainKHR                  m_SwapChain{ nullptr };
+        std::vector<VkImage>            m_Images{};
+        std::vector<VkImageView>        m_ImageViews{};
     };
 }
