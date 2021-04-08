@@ -2,6 +2,7 @@
 
 #include <platform/vulkan.h>
 #include "vk_core.h"
+#include "vk_initializers.h"
 #include "vk_swapchain.h"
 
 #include <vulkan/vulkan.h>
@@ -21,25 +22,25 @@ namespace Renderer
 
     private:
         void InitVulkan() noexcept;
-        void InitSwapchain() noexcept;
+        void InitSwapChain() noexcept;
         void InitCommands() noexcept;
 
         bool                        m_IsInitalized{ false };
 
         const Platform::Window&     m_Window;
 
-        VkInstance                  m_Instance;
-        VkDebugUtilsMessengerEXT    m_DebugMessenger;
-        VkDevice                    m_Device;
-        VkPhysicalDevice            m_PhysicalDevice;
-        VkSurfaceKHR                m_Surface;
-        VkQueue                     m_GraphicsQueue;
-        uint32_t                    m_GraphicsQueueFamily;
+        VkInstance                  m_Instance{ nullptr };
+        VkDebugUtilsMessengerEXT    m_DebugMessenger{ nullptr };
+        VkDevice                    m_Device{ nullptr };
+        VkPhysicalDevice            m_PhysicalDevice{ nullptr };
+        VkSurfaceKHR                m_Surface{ nullptr };
+        VkQueue                     m_GraphicsQueue{ nullptr };
+        uint32_t                    m_GraphicsQueueFamily{};
 
         Vulkan::SwapChain           m_SwapChain{};
 
-        VkCommandPool               m_CommandPool;
-        VkCommandBuffer             m_CommandBuffer;
+        VkCommandPool               m_CommandPool{ nullptr };
+        VkCommandBuffer             m_CommandBuffer{ nullptr };
     };
 
     Renderer::Renderer(const Platform::Window& window) noexcept :
@@ -67,7 +68,7 @@ namespace Renderer
     void Renderer::NativeRenderer::Init() noexcept
     {
         InitVulkan();
-        InitSwapchain();
+        InitSwapChain();
         InitCommands();
 
         m_IsInitalized = true;
@@ -126,7 +127,7 @@ namespace Renderer
         m_GraphicsQueueFamily   = vkbDevice.get_queue_index(vkb::QueueType::graphics).value();
     }
 
-    void Renderer::NativeRenderer::InitSwapchain() noexcept
+    void Renderer::NativeRenderer::InitSwapChain() noexcept
     {
         Vulkan::SwapChainInitInfo swapChainInitInfo{};
         swapChainInitInfo.instance          = m_Instance;
@@ -142,20 +143,18 @@ namespace Renderer
 
     void Renderer::NativeRenderer::InitCommands() noexcept
     {
-        VkCommandPoolCreateInfo commandPoolInfo{};
-        commandPoolInfo.sType               = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-        commandPoolInfo.pNext               = nullptr;
-        commandPoolInfo.queueFamilyIndex    = m_GraphicsQueueFamily;
-        commandPoolInfo.flags               = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+        VkCommandPoolCreateInfo commandPoolInfo = Vulkan::Init::CommandPoolCreateInfo(
+            m_GraphicsQueueFamily, 
+            VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT
+        );
 
         VK_CHECK_RESULT(vkCreateCommandPool(m_Device, &commandPoolInfo, nullptr, &m_CommandPool));
 
-        VkCommandBufferAllocateInfo cmdAllocInfo{};
-        cmdAllocInfo.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        cmdAllocInfo.pNext              = nullptr;
-        cmdAllocInfo.commandPool        = m_CommandPool;
-        cmdAllocInfo.commandBufferCount = 1;
-        cmdAllocInfo.level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        VkCommandBufferAllocateInfo cmdAllocInfo = Vulkan::Init::CommandBufferAllocateInfo(
+            m_CommandPool,
+            1,
+            VK_COMMAND_BUFFER_LEVEL_PRIMARY
+        );
 
         VK_CHECK_RESULT(vkAllocateCommandBuffers(m_Device, &cmdAllocInfo, &m_CommandBuffer));
     }
