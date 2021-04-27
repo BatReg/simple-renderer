@@ -35,6 +35,16 @@ namespace Renderer::Vulkan
             return m_ColorFormat;
         }
 
+        int GetImageCount() const noexcept
+        {
+            return m_ImageCount;
+        }
+
+        const std::vector<VkImageView>& GetImageViews() const noexcept
+        {
+            return m_ImageViews;
+        }
+
     private:
         VkInstance                      m_Instance{ nullptr };
         VkDevice                        m_Device{ nullptr };
@@ -44,5 +54,6 @@ namespace Renderer::Vulkan
         VkSwapchainKHR                  m_SwapChain{ nullptr };
         std::vector<VkImage>            m_Images{};
         std::vector<VkImageView>        m_ImageViews{};
+        int                             m_ImageCount{};
     };
 }

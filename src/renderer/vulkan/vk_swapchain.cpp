@@ -28,6 +28,7 @@ namespace Renderer::Vulkan
         m_Images        = vkbSwapchain.get_images().value();
         m_ImageViews    = vkbSwapchain.get_image_views().value();
         m_ColorFormat   = vkbSwapchain.image_format;
+        m_ImageCount    = vkbSwapchain.image_count;
     }
 
     void SwapChain::Destroy() noexcept
