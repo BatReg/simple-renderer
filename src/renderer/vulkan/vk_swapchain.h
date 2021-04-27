@@ -30,6 +30,11 @@ namespace Renderer::Vulkan
             return m_Surface;
         }
 
+        VkFormat GetColorFormat() const noexcept
+        {
+            return m_ColorFormat;
+        }
+
     private:
         VkInstance                      m_Instance{ nullptr };
         VkDevice                        m_Device{ nullptr };
