@@ -88,6 +88,11 @@ namespace Renderer
             return;
         }
 
+        for(size_t i = 0; i < m_Framebuffers.size(); ++i)
+        {
+            vkDestroyFramebuffer(m_Device, m_Framebuffers[i], nullptr);
+        }
+
         vkDestroyRenderPass(m_Device, m_RenderPass, nullptr);
         vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
 
@@ -189,6 +194,7 @@ namespace Renderer
 
         VkRenderPassCreateInfo renderPassInfo = {};
         renderPassInfo.sType            = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+        renderPassInfo.pNext            = nullptr;
         renderPassInfo.attachmentCount  = 1;
         renderPassInfo.pAttachments     = &colorAttachment;
         renderPassInfo.subpassCount     = 1;
@@ -199,6 +205,23 @@ namespace Renderer
 
     void Renderer::NativeRenderer::InitFramebuffers() noexcept
     {
+        VkFramebufferCreateInfo framebufferInfo = {};
+        framebufferInfo.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.pNext           = nullptr;
+        framebufferInfo.renderPass      = m_RenderPass;
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.width           = 800;
+        framebufferInfo.height          = 600;
+        framebufferInfo.layers          = 1;
 
+        const size_t swapChainImageCount = m_SwapChain.GetImageCount();
+        m_Framebuffers = std::vector<VkFramebuffer>(swapChainImageCount);
+
+        const std::vector<VkImageView> imageViews = m_SwapChain.GetImageViews();
+        for(size_t i = 0; i < swapChainImageCount; ++i)
+        {
+            framebufferInfo.pAttachments = &imageViews[i];
+            VK_CHECK_RESULT(vkCreateFramebuffer(m_Device, &framebufferInfo, nullptr, &m_Framebuffers[i]));
+        }
     }
 }
