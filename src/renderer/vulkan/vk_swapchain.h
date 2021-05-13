@@ -14,6 +14,12 @@ namespace Renderer::Vulkan
         VkSurfaceKHR        surface;
     };
 
+    struct SwapChainBuffer
+    {
+        VkImage image;
+        VkImageView view;
+    };
+
     class SwapChain
     {
     public:
@@ -40,9 +46,9 @@ namespace Renderer::Vulkan
             return m_ImageCount;
         }
 
-        const std::vector<VkImageView>& GetImageViews() const noexcept
+        const std::vector<SwapChainBuffer>& GetBuffers() const noexcept
         {
-            return m_ImageViews;
+            return m_Buffers;
         }
 
     private:
@@ -53,7 +59,7 @@ namespace Renderer::Vulkan
         VkFormat                        m_ColorFormat{};
         VkSwapchainKHR                  m_SwapChain{ nullptr };
         std::vector<VkImage>            m_Images{};
-        std::vector<VkImageView>        m_ImageViews{};
+        std::vector<SwapChainBuffer>    m_Buffers{};
         int                             m_ImageCount{};
     };
 }
