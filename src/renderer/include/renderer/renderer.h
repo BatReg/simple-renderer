@@ -17,6 +17,7 @@ namespace Renderer
 
         void Init() noexcept;
         void Destroy() noexcept;
+        void Render() noexcept;
 
     private:
         class NativeRenderer;

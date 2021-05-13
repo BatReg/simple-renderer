@@ -24,6 +24,7 @@ int main()
     while (!wnd.ShouldClose())
     {
         wnd.PollEvents();
+        renderer.Render();
     }
 
     renderer.Destroy();
