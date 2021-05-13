@@ -217,10 +217,10 @@ namespace Renderer
         const size_t swapChainImageCount = m_SwapChain.GetImageCount();
         m_Framebuffers = std::vector<VkFramebuffer>(swapChainImageCount);
 
-        const std::vector<VkImageView> imageViews = m_SwapChain.GetImageViews();
+        const std::vector<Vulkan::SwapChainBuffer> buffers = m_SwapChain.GetBuffers();
         for(size_t i = 0; i < swapChainImageCount; ++i)
         {
-            framebufferInfo.pAttachments = &imageViews[i];
+            framebufferInfo.pAttachments = &buffers[i].view;
             VK_CHECK_RESULT(vkCreateFramebuffer(m_Device, &framebufferInfo, nullptr, &m_Framebuffers[i]));
         }
     }

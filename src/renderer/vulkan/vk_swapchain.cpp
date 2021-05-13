@@ -26,9 +26,16 @@ namespace Renderer::Vulkan
 
         m_SwapChain     = vkbSwapchain.swapchain;
         m_Images        = vkbSwapchain.get_images().value();
-        m_ImageViews    = vkbSwapchain.get_image_views().value();
         m_ColorFormat   = vkbSwapchain.image_format;
         m_ImageCount    = vkbSwapchain.image_count;
+
+        std::vector<VkImageView> imageViews = vkbSwapchain.get_image_views().value();
+        m_Buffers.resize(m_ImageCount);
+        for(size_t i = 0; i < m_ImageCount; ++i)
+        {
+            m_Buffers[i].image = m_Images[i];
+            m_Buffers[i].view = imageViews[i];
+        }
     }
 
     void SwapChain::Destroy() noexcept
@@ -38,9 +45,9 @@ namespace Renderer::Vulkan
             vkDestroySwapchainKHR(m_Device, m_SwapChain, nullptr);
         }
 
-        for(size_t i = 0; i < m_ImageViews.size(); ++i)
+        for(size_t i = 0; i < m_Buffers.size(); ++i)
         {
-            vkDestroyImageView(m_Device, m_ImageViews[i], nullptr);
+            vkDestroyImageView(m_Device, m_Buffers[i].view, nullptr);
         }
 
         if(m_Surface != VK_NULL_HANDLE)
