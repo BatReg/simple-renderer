@@ -19,6 +19,7 @@ namespace Renderer
 
         void Init() noexcept;
         void Destroy() noexcept;
+        void Render() noexcept;
 
     private:
         void InitVulkan() noexcept;
@@ -26,6 +27,7 @@ namespace Renderer
         void InitCommands() noexcept;
         void InitDefaultRenderPass() noexcept;
         void InitFramebuffers() noexcept;
+        void InitSyncStructures() noexcept;
 
         bool                        m_IsInitalized{ false };
 
@@ -45,6 +47,10 @@ namespace Renderer
         VkCommandBuffer             m_CommandBuffer{ nullptr };
         VkRenderPass                m_RenderPass{ nullptr };
         std::vector<VkFramebuffer>  m_Framebuffers{ nullptr };
+
+        VkSemaphore                 m_PresentSemaphore{ nullptr };
+        VkSemaphore                 m_RenderSemaphore{ nullptr };
+        VkFence                     m_RenderFence{ nullptr };
     };
 
     Renderer::Renderer(const Platform::Window& window) noexcept :
@@ -66,6 +72,11 @@ namespace Renderer
         m_NativeRenderer->Destroy();
     }
 
+    void Renderer::Render() noexcept
+    {
+        m_NativeRenderer->Render();
+    }
+
     Renderer::NativeRenderer::NativeRenderer(const Platform::Window& window) noexcept
         : m_Window(window) {}
 
@@ -76,6 +87,7 @@ namespace Renderer
         InitCommands();
         InitDefaultRenderPass();
         InitFramebuffers();
+        InitSyncStructures();
 
         m_IsInitalized = true;
         std::cout << "Vulkan Renderer initialized" << std::endl;
@@ -87,6 +99,11 @@ namespace Renderer
         {
             return;
         }
+
+        vkDestroySemaphore(m_Device, m_RenderSemaphore, nullptr);
+        vkDestroySemaphore(m_Device, m_PresentSemaphore, nullptr);
+
+        vkDestroyFence(m_Device, m_RenderFence, nullptr);
 
         for(size_t i = 0; i < m_Framebuffers.size(); ++i)
         {
@@ -223,5 +240,28 @@ namespace Renderer
             framebufferInfo.pAttachments = &buffers[i].view;
             VK_CHECK_RESULT(vkCreateFramebuffer(m_Device, &framebufferInfo, nullptr, &m_Framebuffers[i]));
         }
+    }
+
+    void Renderer::NativeRenderer::InitSyncStructures() noexcept
+    {
+        VkFenceCreateInfo fenceCreateInfo = {};
+        fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceCreateInfo.pNext = nullptr;
+        fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+        VK_CHECK_RESULT(vkCreateFence(m_Device, &fenceCreateInfo, nullptr, &m_RenderFence));
+
+        VkSemaphoreCreateInfo semaphoreCreateInfo = {};
+        semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+        semaphoreCreateInfo.pNext = nullptr;
+        semaphoreCreateInfo.flags = 0;
+
+        VK_CHECK_RESULT(vkCreateSemaphore(m_Device, &semaphoreCreateInfo, nullptr, &m_PresentSemaphore));
+        VK_CHECK_RESULT(vkCreateSemaphore(m_Device, &semaphoreCreateInfo, nullptr, &m_RenderSemaphore));
+    }
+
+    void Renderer::NativeRenderer::Render() noexcept
+    {
+
     }
 }
