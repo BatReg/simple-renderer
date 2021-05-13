@@ -38,6 +38,25 @@ namespace Renderer::Vulkan
         }
     }
 
+    void SwapChain::AcquireNextImage(VkSemaphore presentSemaphore, uint32_t* imageIndex) noexcept
+    {
+        VK_CHECK_RESULT(vkAcquireNextImageKHR(m_Device, m_SwapChain, UINT64_MAX, presentSemaphore, nullptr, imageIndex));
+    }
+
+    void SwapChain::QueuePresent(VkQueue queue, uint32_t imageIndex, VkSemaphore waitSemaphore) noexcept
+    {
+        VkPresentInfoKHR presentInfo = {};
+        presentInfo.sType               = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+        presentInfo.pNext               = nullptr;
+        presentInfo.swapchainCount      = 1;
+        presentInfo.pSwapchains         = &m_SwapChain;
+        presentInfo.pImageIndices       = &imageIndex;
+        presentInfo.waitSemaphoreCount  = 1;
+        presentInfo.pWaitSemaphores     = &waitSemaphore;
+
+        VK_CHECK_RESULT(vkQueuePresentKHR(queue, &presentInfo));
+    }
+
     void SwapChain::Destroy() noexcept
     {
         if(m_SwapChain != VK_NULL_HANDLE)

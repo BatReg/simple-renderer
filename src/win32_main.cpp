@@ -21,10 +21,11 @@ int main()
 
     renderer.Init();
 
+    int frameNumber = 0;
     while (!wnd.ShouldClose())
     {
         wnd.PollEvents();
-        renderer.Render();
+        renderer.Render(frameNumber++);
     }
 
     renderer.Destroy();

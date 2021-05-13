@@ -19,7 +19,7 @@ namespace Renderer
 
         void Init() noexcept;
         void Destroy() noexcept;
-        void Render() noexcept;
+        void Render(int frameNumber) noexcept;
 
     private:
         void InitVulkan() noexcept;
@@ -72,9 +72,9 @@ namespace Renderer
         m_NativeRenderer->Destroy();
     }
 
-    void Renderer::Render() noexcept
+    void Renderer::Render(int frameNumber) noexcept
     {
-        m_NativeRenderer->Render();
+        m_NativeRenderer->Render(frameNumber);
     }
 
     Renderer::NativeRenderer::NativeRenderer(const Platform::Window& window) noexcept
@@ -99,6 +99,8 @@ namespace Renderer
         {
             return;
         }
+
+        vkDeviceWaitIdle(m_Device);
 
         vkDestroySemaphore(m_Device, m_RenderSemaphore, nullptr);
         vkDestroySemaphore(m_Device, m_PresentSemaphore, nullptr);
@@ -260,8 +262,60 @@ namespace Renderer
         VK_CHECK_RESULT(vkCreateSemaphore(m_Device, &semaphoreCreateInfo, nullptr, &m_RenderSemaphore));
     }
 
-    void Renderer::NativeRenderer::Render() noexcept
+    void Renderer::NativeRenderer::Render(int frameNumber) noexcept
     {
+        VK_CHECK_RESULT(vkWaitForFences(m_Device, 1, &m_RenderFence, true, UINT64_MAX));
+        VK_CHECK_RESULT(vkResetFences(m_Device, 1, &m_RenderFence));
 
+        uint32_t swapchainImageIndex{};
+        m_SwapChain.AcquireNextImage(m_PresentSemaphore, &swapchainImageIndex);
+
+        VK_CHECK_RESULT(vkResetCommandBuffer(m_CommandBuffer, 0));
+
+        VkCommandBuffer cmd = m_CommandBuffer;
+
+        VkCommandBufferBeginInfo cmdBeginInfo = {};
+        cmdBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        cmdBeginInfo.pNext = nullptr;
+        cmdBeginInfo.pInheritanceInfo = nullptr;
+        cmdBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+        VK_CHECK_RESULT(vkBeginCommandBuffer(cmd, &cmdBeginInfo));
+
+        float flash = abs(sin(frameNumber / 120.0f));
+        VkClearValue clearValue;
+        clearValue.color = { {0.0f, 0.0f, flash, 1.0f} };
+
+        VkRenderPassBeginInfo renderPassBeginInfo = {};
+        renderPassBeginInfo.sType               = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassBeginInfo.pNext               = nullptr;
+        renderPassBeginInfo.renderPass          = m_RenderPass;
+        renderPassBeginInfo.renderArea.offset.x = 0;
+        renderPassBeginInfo.renderArea.offset.y = 0;
+        renderPassBeginInfo.renderArea.extent   = {800, 600};
+        renderPassBeginInfo.framebuffer         = m_Framebuffers[swapchainImageIndex];
+        renderPassBeginInfo.clearValueCount     = 1;
+        renderPassBeginInfo.pClearValues        = &clearValue;
+
+        vkCmdBeginRenderPass(cmd, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+        vkCmdEndRenderPass(cmd);
+        VK_CHECK_RESULT(vkEndCommandBuffer(cmd));
+
+        VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        VkSubmitInfo submitInfo = {};
+        submitInfo.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.pNext                = nullptr;
+        submitInfo.pWaitDstStageMask    = &waitStage;
+        submitInfo.waitSemaphoreCount   = 1;
+        submitInfo.pWaitSemaphores      = &m_PresentSemaphore;
+        submitInfo.signalSemaphoreCount = 1;
+        submitInfo.pSignalSemaphores    = &m_RenderSemaphore;
+        submitInfo.commandBufferCount   = 1;
+        submitInfo.pCommandBuffers      = &cmd;
+
+        VK_CHECK_RESULT(vkQueueSubmit(m_GraphicsQueue, 1, &submitInfo, m_RenderFence));
+
+        m_SwapChain.QueuePresent(m_GraphicsQueue, swapchainImageIndex, m_RenderSemaphore);
     }
 }

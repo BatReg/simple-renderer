@@ -17,7 +17,7 @@ namespace Renderer
 
         void Init() noexcept;
         void Destroy() noexcept;
-        void Render() noexcept;
+        void Render(int frameNumber) noexcept;
 
     private:
         class NativeRenderer;
