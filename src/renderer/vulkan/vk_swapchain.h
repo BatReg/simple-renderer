@@ -29,6 +29,8 @@ namespace Renderer::Vulkan
 
         void Init(const SwapChainInitInfo& info) noexcept;
         void CreateSwapChain(const uint32_t& width, const uint32_t& height, bool vSync = false) noexcept;
+        void AcquireNextImage(VkSemaphore presentSemaphore, uint32_t* imageIndex) noexcept;
+        void QueuePresent(VkQueue queue, uint32_t imageIndex, VkSemaphore waitSemaphore) noexcept;
         void Destroy() noexcept;
 
         VkSurfaceKHR GetSurface() const noexcept
